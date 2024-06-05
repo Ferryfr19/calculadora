@@ -1,0 +1,99 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Calculadora extends JFrame implements ActionListener {
+    private JTextField pantalla;
+    private String operador;
+    private double resultado;
+    private boolean nuevoNumero;
+
+    public Calculadora() {
+        operador = "";
+        resultado = 0;
+        nuevoNumero = true;
+
+        setTitle("Calculadora");
+        setSize(400, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        Pantalla pantallaObj = new Pantalla();
+        pantalla = pantallaObj.crearPantalla();
+        add(pantalla, BorderLayout.NORTH);
+
+        Botones botonesObj = new Botones(this);
+        JPanel panelBotones = botonesObj.crearBotones();
+        add(panelBotones, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String comando = e.getActionCommand();
+
+        if ("0123456789.".contains(comando)) {
+            manejarEntradaNumerica(comando);
+        } else if (comando.equals("C")) {
+            reiniciarCalculadora();
+        } else if (comando.equals("=")) {
+            calcularResultado();
+        } else {
+            manejarOperador(comando);
+        }
+    }
+
+    private void manejarEntradaNumerica(String comando) {
+        if (nuevoNumero) {
+            pantalla.setText(comando);
+            nuevoNumero = false;
+        } else {
+            pantalla.setText(pantalla.getText() + comando);
+        }
+    }
+
+    private void manejarOperador(String comando) {
+        if (!nuevoNumero) {
+            calcular(Double.parseDouble(pantalla.getText()));
+            nuevoNumero = true;
+        }
+        operador = comando;
+    }
+
+    private void calcularResultado() {
+        calcular(Double.parseDouble(pantalla.getText()));
+        operador = "";
+    }
+
+    private void reiniciarCalculadora() {
+        resultado = 0;
+        operador = "";
+        pantalla.setText("");
+        nuevoNumero = true;
+    }
+
+    private void calcular(double numero) {
+        switch (operador) {
+            case "+":
+                resultado += numero;
+                break;
+            case "-":
+                resultado -= numero;
+                break;
+            case "*":
+                resultado *= numero;
+                break;
+            case "/":
+                if (numero != 0) {
+                    resultado /= numero;
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se puede dividir por cero", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                break;
+            default:
+                resultado = numero;
+                break;
+        }
+        pantalla.setText(String.valueOf(resultado));
+    }
+}
