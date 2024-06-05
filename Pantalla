@@ -1,0 +1,12 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class Pantalla {
+    public JTextField crearPantalla() {
+        JTextField pantalla = new JTextField();
+        pantalla.setFont(new Font("Arial", Font.PLAIN, 36));
+        pantalla.setHorizontalAlignment(JTextField.RIGHT);
+        pantalla.setEditable(false);
+        return pantalla;
+    }
+}
